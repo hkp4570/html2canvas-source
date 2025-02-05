@@ -1,0 +1,26 @@
+{
+  "name": "html2canvas-source",
+  "version": "1.0.0",
+  "description": "html2canvas-source",
+  "main": "dist/html2canvas.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "rollup --config"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.26.7",
+    "@babel/preset-env": "^7.26.7",
+    "@babel/preset-flow": "^7.25.9",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.2",
+    "eslint": "^9.19.0",
+    "jest": "^29.7.0",
+    "rollup": "^4.34.2",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.8.1",
+    "typescript": "^5.7.3"
+  }
+}

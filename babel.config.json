@@ -1,0 +1,14 @@
+{
+    "presets": [
+        [
+            "@babel/preset-env",
+            {
+                "targets":{
+                    "ie": "9"
+                }
+            }
+        ],
+        "@babel/preset-flow"
+    ],
+    "plugins": []
+}
