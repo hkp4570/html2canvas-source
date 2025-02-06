@@ -11,8 +11,9 @@
         html2canvas
     </div> 
     <script>
-        console.log(html2canvas, 'html2canvas');
-        html2canvas(document.getElementById('box'), {});
+        html2canvas(document.getElementById('box'), {
+            logging: true,
+        });
     </script>
 </body>
 </html>

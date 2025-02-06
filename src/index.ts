@@ -1,4 +1,5 @@
 import { Bounds } from "./css/layout/bounds";
+import { Context } from "./core/context";
 
 export type Options = {
 	backgroundColor: string | null;
@@ -12,6 +13,8 @@ export type Options = {
 	windowHeight: number,
 	scrollX: number,
 	scrollY: number,
+	logging: boolean,
+	cache: boolean,
 }
 
 const html2canvas = (element: HTMLElement, options : Partial<Options> = {}) => {
@@ -20,7 +23,6 @@ const html2canvas = (element: HTMLElement, options : Partial<Options> = {}) => {
 export default html2canvas;
 
 const renderElement = (element: HTMLElement, opts:Partial<Options>) => {
-	console.log(element, opts);
 	if(!element || typeof element !== 'object'){
 		return Promise.reject('Invalid element provided as first argument');
 	}
@@ -40,6 +42,11 @@ const renderElement = (element: HTMLElement, opts:Partial<Options>) => {
 		useCORS: opts.useCORS ?? false, // 是否尝试使用 CORS 从服务器加载图像
 	}
 	console.log(resourceOptions, 'resourceOptions')
+	const contextOptions = {
+		logging: opts.logging ?? true,
+		cache: opts.cache,
+		...resourceOptions,
+	}
 	const windowOptions = {
 		windowWidth: opts.windowWidth ?? defaultView.innerWidth, // 渲染元素时使用的窗口宽度，这可能会影响媒体查询等内容
 		windowHeight: opts.windowHeight ?? defaultView.innerHeight, // 渲染元素时使用的窗口高度，这可能会影响媒体查询等内容
@@ -52,6 +59,12 @@ const renderElement = (element: HTMLElement, opts:Partial<Options>) => {
 		windowOptions.windowWidth,
 		windowOptions.windowHeight,
 	)
-	console.log(windowBounds, 'windowBounds');
+	const context = new Context(contextOptions, windowBounds);
+	// 如果浏览器支持，是否使用 ForeignObject 渲染
+	// const foreignObjectRendering = opts.foreignObjectRendering ?? false;
+
+	context.logger.debug( `Starting document clone with size ${windowBounds.width}x${
+		windowBounds.height
+	} scrolled to ${-windowBounds.left},${-windowBounds.top}`);
 	return 'renderElement';
 }
