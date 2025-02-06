@@ -1,5 +1,6 @@
 import { Bounds } from "./css/layout/bounds";
 import { Context } from "./core/context";
+import { DocumentCloner, CloneConfigurations } from "./dom/document-cloner";
 
 export type Options = {
 	backgroundColor: string | null;
@@ -15,6 +16,8 @@ export type Options = {
 	scrollY: number,
 	logging: boolean,
 	cache: boolean,
+	onclone: (document: Document, element: HTMLElement) => void,
+	ignoreElements: (element: Element) => boolean,
 }
 
 const html2canvas = (element: HTMLElement, options : Partial<Options> = {}) => {
@@ -41,7 +44,6 @@ const renderElement = (element: HTMLElement, opts:Partial<Options>) => {
 		proxy: opts.proxy, // 用于加载跨源图像的代理 URL。如果留空，则不会加载跨源图像
 		useCORS: opts.useCORS ?? false, // 是否尝试使用 CORS 从服务器加载图像
 	}
-	console.log(resourceOptions, 'resourceOptions')
 	const contextOptions = {
 		logging: opts.logging ?? true,
 		cache: opts.cache,
@@ -61,10 +63,23 @@ const renderElement = (element: HTMLElement, opts:Partial<Options>) => {
 	)
 	const context = new Context(contextOptions, windowBounds);
 	// 如果浏览器支持，是否使用 ForeignObject 渲染
-	// const foreignObjectRendering = opts.foreignObjectRendering ?? false;
+	const foreignObjectRendering = opts.foreignObjectRendering ?? false;
+
+	const cloneOptions: CloneConfigurations = {
+        allowTaint: opts.allowTaint ?? false,
+        onclone: opts.onclone, // 当文档被克隆以进行渲染时调用的回调函数，可用于修改将要渲染的内容而不影响原始源文档
+        ignoreElements: opts.ignoreElements, // 从渲染中删除匹配元素的谓词函数
+        inlineImages: foreignObjectRendering,
+        copyStyles: foreignObjectRendering
+    };
 
 	context.logger.debug( `Starting document clone with size ${windowBounds.width}x${
 		windowBounds.height
 	} scrolled to ${-windowBounds.left},${-windowBounds.top}`);
-	return 'renderElement';
+
+	const documentCloner = new DocumentCloner(context, element, cloneOptions);
+	const cloneElement = documentCloner.clonedReferenceElement;
+	if(!cloneElement){
+		return Promise.reject(`Unable to find element in cloned iframe`);
+	}
 }
