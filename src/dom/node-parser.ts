@@ -17,3 +17,4 @@ export const isLinkElement = (element:Element): element is HTMLLinkElement => el
 export const isMetaElement = (element:Element): element is HTMLMetaElement => element.tagName === 'META';
 export const isBaseElement = (element:Element): element is HTMLBaseElement => element.tagName === 'BASE';
 export const isHeadElement = (element:Element): element is HTMLHeadElement => element.tagName === 'HEAD';
+export const isBodyElement = (element:Element): element is HTMLBodyElement => element.tagName === 'BODY';

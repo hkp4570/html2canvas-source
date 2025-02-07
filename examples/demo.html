@@ -13,6 +13,9 @@
     <script>
         html2canvas(document.getElementById('box'), {
             logging: true,
+            onclone:function(document,element){
+            console.log(document,element,'document,element');
+          }
         });
     </script>
 </body>

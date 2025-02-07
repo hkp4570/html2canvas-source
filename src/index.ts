@@ -25,7 +25,7 @@ const html2canvas = (element: HTMLElement, options : Partial<Options> = {}) => {
 }
 export default html2canvas;
 
-const renderElement = (element: HTMLElement, opts:Partial<Options>) => {
+const renderElement = async (element: HTMLElement, opts:Partial<Options>) => {
 	if(!element || typeof element !== 'object'){
 		return Promise.reject('Invalid element provided as first argument');
 	}
@@ -77,9 +77,14 @@ const renderElement = (element: HTMLElement, opts:Partial<Options>) => {
 		windowBounds.height
 	} scrolled to ${-windowBounds.left},${-windowBounds.top}`);
 
+	// 克隆html结构
 	const documentCloner = new DocumentCloner(context, element, cloneOptions);
 	const cloneElement = documentCloner.clonedReferenceElement;
 	if(!cloneElement){
 		return Promise.reject(`Unable to find element in cloned iframe`);
 	}
+
+	// 将克隆的html结构写入到iframe中 并将其返回
+	const container = await documentCloner.toIFrame(ownerDocument, windowBounds);
+	console.log(container, 'container');
 }
