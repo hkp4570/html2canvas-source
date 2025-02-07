@@ -1,4 +1,5 @@
-
+import { Context } from "../core/context";
+import { ElementContainer } from "./element-container";
 export const isTextNode = (node:Node): node is Text => node.nodeType === Node.TEXT_NODE;
 export const isElementNode = (node:Node): node is Element => node.nodeType === Node.ELEMENT_NODE;
 export const isHTMLElementNode = (node:Node): node is HTMLElement => {
@@ -18,3 +19,13 @@ export const isMetaElement = (element:Element): element is HTMLMetaElement => el
 export const isBaseElement = (element:Element): element is HTMLBaseElement => element.tagName === 'BASE';
 export const isHeadElement = (element:Element): element is HTMLHeadElement => element.tagName === 'HEAD';
 export const isBodyElement = (element:Element): element is HTMLBodyElement => element.tagName === 'BODY';
+export const isHTMLElement = (element: Element): element is HTMLHtmlElement => element.tagName === 'HTML';
+
+export const createContainer = (context: Context, element: Element) => {
+    // TODO: 各种类型元素容器创建
+    return new ElementContainer(context, element);
+}
+
+export const parseTree = (context: Context, element: Element) => {
+    const container = createContainer(context, element);
+}

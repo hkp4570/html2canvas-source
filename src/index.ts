@@ -1,6 +1,7 @@
-import { Bounds } from "./css/layout/bounds";
+import { Bounds, parseBounds, parseDocumentSize } from "./css/layout/bounds";
 import { Context } from "./core/context";
 import { DocumentCloner, CloneConfigurations } from "./dom/document-cloner";
+import { isBodyElement, isHTMLElement } from "./dom/node-parser";
 
 export type Options = {
 	backgroundColor: string | null;
@@ -79,6 +80,7 @@ const renderElement = async (element: HTMLElement, opts:Partial<Options>) => {
 
 	// 克隆html结构
 	const documentCloner = new DocumentCloner(context, element, cloneOptions);
+	// 要截图的容器
 	const cloneElement = documentCloner.clonedReferenceElement;
 	if(!cloneElement){
 		return Promise.reject(`Unable to find element in cloned iframe`);
@@ -86,5 +88,14 @@ const renderElement = async (element: HTMLElement, opts:Partial<Options>) => {
 
 	// 将克隆的html结构写入到iframe中 并将其返回
 	const container = await documentCloner.toIFrame(ownerDocument, windowBounds);
-	console.log(container, 'container');
+
+	// const {width,height,left,top} = isBodyElement(cloneElement) || isHTMLElement(cloneElement) ? parseDocumentSize(cloneElement.ownerDocument) : parseBounds(context, cloneElement);
+
+	let canvas;
+	if(foreignObjectRendering){
+
+	}else{
+		console.log('aaaa');
+		
+	}
 }
