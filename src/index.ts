@@ -3,6 +3,8 @@ import { Context } from "./core/context";
 import { DocumentCloner, CloneConfigurations } from "./dom/document-cloner";
 import { isBodyElement, isHTMLElement } from "./dom/node-parser";
 import { parseTree } from "./dom/node-parser";
+import { CanvasRenderer, RenderConfigurations } from "./render/canvas/canvas-renderer";
+import { parseColor, COLORS, isTransparent } from "./css/types/color";
 
 export type Options = {
 	backgroundColor: string | null;
@@ -90,14 +92,54 @@ const renderElement = async (element: HTMLElement, opts:Partial<Options>) => {
 	// 将克隆的html结构写入到iframe中 并将其返回
 	const container = await documentCloner.toIFrame(ownerDocument, windowBounds);
 
-	// const {width,height,left,top} = isBodyElement(cloneElement) || isHTMLElement(cloneElement) ? parseDocumentSize(cloneElement.ownerDocument) : parseBounds(context, cloneElement);
+	const {width,height,left,top} = isBodyElement(cloneElement) || isHTMLElement(cloneElement) ? parseDocumentSize(cloneElement.ownerDocument) : parseBounds(context, cloneElement);
+	const backgroundColor = parseBackgroundColor(context, cloneElement, opts.backgroundColor);
 
+	const renderOptions: RenderConfigurations = {
+        canvas: opts.canvas,
+        backgroundColor,
+        scale: opts.scale ?? defaultView.devicePixelRatio ?? 1,
+        x: (opts.x ?? 0) + left,
+        y: (opts.y ?? 0) + top,
+        width: opts.width ?? Math.ceil(width),
+        height: opts.height ?? Math.ceil(height)
+    };
 	let canvas;
 	if(foreignObjectRendering){
 
 	}else{
 		// ? 解析节点信息
 		const root = parseTree(context, cloneElement);
-		
+		// 渲染离屏cancas
+		const renderer = new CanvasRenderer(context, renderOptions);
+		canvas = await renderer.render(root);
 	}
+	return canvas;
 }
+
+
+const parseBackgroundColor = (context: Context, element: HTMLElement, backgroundColorOverride?: string | null) => {
+    const ownerDocument = element.ownerDocument;
+    // http://www.w3.org/TR/css3-background/#special-backgrounds
+    const documentBackgroundColor = ownerDocument.documentElement
+        ? parseColor(context, getComputedStyle(ownerDocument.documentElement).backgroundColor as string)
+        : COLORS.TRANSPARENT;
+    const bodyBackgroundColor = ownerDocument.body
+        ? parseColor(context, getComputedStyle(ownerDocument.body).backgroundColor as string)
+        : COLORS.TRANSPARENT;
+
+    const defaultBackgroundColor =
+        typeof backgroundColorOverride === 'string'
+            ? parseColor(context, backgroundColorOverride)
+            : backgroundColorOverride === null
+            ? COLORS.TRANSPARENT
+            : 0xffffffff;
+
+    return element === ownerDocument.documentElement
+        ? isTransparent(documentBackgroundColor)
+            ? isTransparent(bodyBackgroundColor)
+                ? defaultBackgroundColor
+                : bodyBackgroundColor
+            : documentBackgroundColor
+        : defaultBackgroundColor;
+};

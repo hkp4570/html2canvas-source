@@ -3,6 +3,11 @@ import { CSSParsedDeclaration } from "../css/index";
 import { isHTMLElementNode } from "./node-parser";
 import { Bounds, parseBounds } from "../css/layout/bounds";
 import { TextContainer } from "./text-container";
+
+// 如果ElementContainer的flags为CREATES_STACKING_CONTEXT，则表示该元素创建了一个堆叠上下文
+// 如果ElementContainer的flags为CREATES_REAL_STACKING_CONTEXT，则表示该元素创建了一个真实的堆叠上下文
+// 如果ElementContainer的flags为IS_LIST_OWNER，则表示该元素是一个列表的拥有者
+// 如果ElementContainer的flags为DEBUG_RENDER，则表示该元素是一个调试渲染的元素
 export const enum FLAGS {
     CREATES_STACKING_CONTEXT = 1 << 1,
     CREATES_REAL_STACKING_CONTEXT = 1 << 2,

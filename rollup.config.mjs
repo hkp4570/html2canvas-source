@@ -11,7 +11,7 @@ export default {
 			file: './dist/html2canvas.js',
 			name: 'html2canvas',
 			format: 'umd',
-			sourceMap: true,
+			sourcemap: true,
 		},
 	],
 	external: [],
@@ -19,7 +19,7 @@ export default {
 		resolve(),
 		json(),
 		// https://github.com/rollup/plugins/tree/master/packages/typescript
-		typescript({ sourceMap: true, inlineSources: true, }),
+		typescript({ sourceMap: true, inlineSources: true}),
 		sourceMaps(),
 	],
 }
