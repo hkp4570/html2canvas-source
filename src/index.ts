@@ -2,6 +2,7 @@ import { Bounds, parseBounds, parseDocumentSize } from "./css/layout/bounds";
 import { Context } from "./core/context";
 import { DocumentCloner, CloneConfigurations } from "./dom/document-cloner";
 import { isBodyElement, isHTMLElement } from "./dom/node-parser";
+import { parseTree } from "./dom/node-parser";
 
 export type Options = {
 	backgroundColor: string | null;
@@ -95,7 +96,8 @@ const renderElement = async (element: HTMLElement, opts:Partial<Options>) => {
 	if(foreignObjectRendering){
 
 	}else{
-		console.log('aaaa');
+		// ? 解析节点信息
+		const root = parseTree(context, cloneElement);
 		
 	}
 }

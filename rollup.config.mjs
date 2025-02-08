@@ -1,6 +1,8 @@
+import resolve from '@rollup/plugin-node-resolve';
 import json from '@rollup/plugin-json';
 import terser from '@rollup/plugin-terser';
 import typescript from '@rollup/plugin-typescript';
+import sourceMaps from 'rollup-plugin-sourcemaps';
 
 export default {
     input: 'src/index.ts',
@@ -12,9 +14,12 @@ export default {
 			sourceMap: true,
 		},
 	],
+	external: [],
 	plugins: [
+		resolve(),
 		json(),
 		// https://github.com/rollup/plugins/tree/master/packages/typescript
 		typescript({ sourceMap: true, inlineSources: true, }),
+		sourceMaps(),
 	],
 }

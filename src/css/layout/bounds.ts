@@ -11,6 +11,18 @@ export class Bounds {
             clientRect.height
         );
     }
+    static fromDOMRectList(context: Context, domRectList: DOMRectList): Bounds {
+        const domRect = Array.from(domRectList).find((rect) => rect.width !== 0);
+        return domRect
+            ? new Bounds(
+                  domRect.left + context.windowBounds.left,
+                  domRect.top + context.windowBounds.top,
+                  domRect.width,
+                  domRect.height
+              )
+            : Bounds.EMPTY;
+    }
+    static EMPTY = new Bounds(0, 0, 0, 0);
 }
 
 export const parseBounds = (context:Context, node:Element): Bounds => {
